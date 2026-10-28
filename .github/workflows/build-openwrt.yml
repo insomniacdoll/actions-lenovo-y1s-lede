@@ -49,6 +49,13 @@ jobs:
         df -hT
         echo "=============================================================================="
 
+    - name: Enable sudo environment preservation
+      run: |
+        # The disk optimizer and its PowerShell toolkit require --preserve-env.
+        # Ubuntu 26.04 defaults to sudo-rs, which ignores this option without a list.
+        sudo update-alternatives --set sudo /usr/bin/sudo.ws
+        test "$(sudo --non-interactive --preserve-env printenv RUNNER_OS)" = "$RUNNER_OS"
+
     - name: "Optimize Disk Space"
       uses: "hugoalh/disk-space-optimizer-ghaction@v0.8.1"
       with:
